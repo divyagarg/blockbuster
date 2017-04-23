@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Blockbuster Movies</string>
+    <string name="popularity_pref_val">popular</string>
+    <string name="top_rated_pref_val">top_rated</string>
+    <string name="pref_movie_sort_summary">Sort movies</string>
+    <string name="pref_movie_sort">Sort</string>
+    <string name="sort_by_popularity">Sort by Popularity</string>
+    <string name="sort_by_top_rating">Sort by Top Rating</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="generic_error">Some error occurred. Please try after some time.</string>
+    <string name="release_date">Release Date</string>
+    <string name="settings">Preferences</string>
+</resources>

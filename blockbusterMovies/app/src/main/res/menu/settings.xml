@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+    <item
+        android:id="@+id/popularity"
+        android:orderInCategory="100"
+        android:title="@string/sort_by_popularity"
+        android:fontFamily="sans-serif-medium"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/top_rating"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/sort_by_top_rating"
+        tools:ignore="AppCompatResource"
+        android:checkable="true"/>
+
+</group>
+
+</menu>
