@@ -60,7 +60,7 @@ public class MovieGridActivity extends AppCompatActivity {
         mGridView = (GridView) findViewById(R.id.grid_view);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        mGridView.setOnScrollListener(new EndlessScrollListener());
+        mGridView.setOnScrollListener(new MovieScrollListener());
 
         if (!isNetworkAvailable()) {
             showNoInternetMessage();
@@ -191,12 +191,12 @@ public class MovieGridActivity extends AppCompatActivity {
         }
     }
 
-    class EndlessScrollListener implements AbsListView.OnScrollListener {
+    class MovieScrollListener implements AbsListView.OnScrollListener {
 
         private int visibleThreshold = 15;
         private boolean loading = true;
 
-        public EndlessScrollListener() {
+        public MovieScrollListener() {
         }
 
 
