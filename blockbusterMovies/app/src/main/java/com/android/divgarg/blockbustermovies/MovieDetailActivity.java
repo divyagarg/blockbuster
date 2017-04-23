@@ -27,7 +27,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("Divya", "oncreate");
         setContentView(R.layout.movie_detail_layout);
 
         movieTitle = (TextView)findViewById(R.id.movie_title);

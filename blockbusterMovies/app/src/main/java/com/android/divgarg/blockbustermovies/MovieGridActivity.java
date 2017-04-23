@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -63,12 +62,9 @@ public class MovieGridActivity extends AppCompatActivity {
 
         mGridView.setOnScrollListener(new EndlessScrollListener());
 
-        if (!isNetworkAvailable())
-        {
+        if (!isNetworkAvailable()) {
             showNoInternetMessage();
-        }
-        else
-        {
+        } else {
             mMovieSortOrder = prefUtil.getUserPref(this);
 
             mGridData = new ArrayList<>();
@@ -180,7 +176,6 @@ public class MovieGridActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<MovieItem> movieItems) {
-            Log.v(TAG, "onPost");
             if (movieItems != null) {
                 ArrayList<MovieItem> movies = mGridAdapter.getGidData();
                 if (movies == null) {
