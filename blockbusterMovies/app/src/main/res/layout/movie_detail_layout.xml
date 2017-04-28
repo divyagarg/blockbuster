@@ -1,102 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <RelativeLayout
-        android:id="@+id/movie_detail_1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_layout" />
+
+        <RelativeLayout
+            android:id="@+id/movie_detail_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/movie_title"
+                android:layout_width="@dimen/movie_title_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="@dimen/movie_title_left_margin"
+                android:layout_marginStart="@dimen/movie_title_left_margin"
+                android:layout_marginTop="@dimen/movie_title_top_margin"
+                android:textSize="@dimen/movie_title_text_size"
+                android:textStyle="bold"
+                tools:text="Forrest Gump" />
+
+            <TextView
+                android:id="@+id/movie_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="@dimen/movie_rating_margin_right"
+                android:layout_marginRight="@dimen/movie_rating_margin_right"
+                android:layout_marginTop="@dimen/movie_rating_margin_top"
+                android:textSize="@dimen/movie_rating_text_size"
+                android:textStyle="bold"
+                tools:text="8.1" />
+
+
+            <ImageView
+                android:layout_width="@dimen/star_rating_img_dimen"
+                android:layout_height="@dimen/star_rating_img_dimen"
+                android:layout_marginTop="@dimen/star_rating_icon_top_margin"
+                android:layout_toLeftOf="@id/movie_rating"
+                android:layout_toStartOf="@id/movie_rating"
+                android:contentDescription="@string/star_rating"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_star" />
+
+
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/movie_title"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-           />
-        <TextView
-            android:id="@+id/movie_rating"
-            android:layout_marginTop="20dp"
+            android:id="@+id/movie_synopsis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:textStyle="bold"
-            android:textSize="18sp"
-           />
+            android:layout_below="@+id/movie_detail_1"
+            android:layout_marginLeft="@dimen/movie_synopsis_margin_left"
+            android:layout_marginStart="@dimen/movie_synopsis_margin_left"
+            android:layout_marginTop="@dimen/movie_synopsis_margin_top"
+            tools:text="A man with low IQ has accomplished great things in his life and been present during significant historic events -in each case, far exceeding what anyone imagined he could do." />
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_synopsis"
+            android:layout_marginBottom="@dimen/relative_layout_bottom_margin"
+            android:layout_marginTop="@dimen/relative_layout_top_margin">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_star"
-            android:layout_toLeftOf="@id/movie_rating"
-            android:scaleType="centerCrop"
-            />
+            <ImageView
+                android:id="@+id/movie_poster"
+                android:layout_width="@dimen/poster_image_width_detail"
+                android:layout_height="@dimen/poster_image_height_detail"
+                android:layout_marginLeft="@dimen/poster_margin_left"
+                android:layout_marginStart="@dimen/poster_margin_left"
+                android:contentDescription="@string/poster_description"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/movie_release_date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_toEndOf="@+id/movie_poster"
+                android:layout_toRightOf="@+id/movie_poster"
+                android:gravity="end"
+                android:paddingEnd="@dimen/movie_release_date_padding_right"
+                android:paddingRight="@dimen/movie_release_date_padding_right"
+                android:text="@string/release_date"
+                android:textSize="@dimen/movie_release_date_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/movie_release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/movie_release_date_title"
+                android:layout_toEndOf="@+id/movie_poster"
+                android:layout_toRightOf="@+id/movie_poster"
+                android:gravity="end"
+                android:paddingEnd="@dimen/movie_release_date_padding_right"
+                android:paddingRight="@dimen/movie_release_date_padding_right"
+                android:textSize="@dimen/movie_release_date_text_size"
+                tools:text="1994-07-06" />
+
+        </RelativeLayout>
 
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/movie_synopsis"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_detail_1"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="35dp" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/movie_synopsis"
-        android:layout_marginTop="70dp">
-
-        <ImageView
-            android:id="@+id/movie_poster"
-            android:layout_width="150dp"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp" />
-
-        <TextView
-            android:id="@+id/movie_release_date_title"
-            android:paddingRight="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/movie_poster"
-            android:layout_toRightOf="@+id/movie_poster"
-            android:gravity="right"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/release_date"/>
-
-        <TextView
-            android:id="@+id/movie_release_date"
-            android:paddingRight="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/movie_release_date_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/movie_poster"
-            android:layout_toRightOf="@+id/movie_poster"
-            android:gravity="right"
-            android:textSize="16sp"/>
-
-    </RelativeLayout>
-
-
-</RelativeLayout>
+</ScrollView>

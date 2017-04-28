@@ -1,8 +1,9 @@
-package com.android.divgarg.blockbustermovies;
+package com.android.divgarg.blockbustermovies.adapter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.divgarg.blockbustermovies.R;
+import com.android.divgarg.blockbustermovies.activity.MovieDetailActivity;
 import com.android.divgarg.blockbustermovies.models.MovieItem;
-import com.android.divgarg.blockbustermovies.utils.NetworkUtils;
+import com.android.divgarg.blockbustermovies.utils.PicasoUtil;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -24,32 +27,28 @@ import java.util.ArrayList;
 public class GridViewAdapter extends ArrayAdapter<MovieItem> {
     private Context mContext;
     private int layoutResourceId;
-    private ArrayList<MovieItem> mGridData = new ArrayList<MovieItem>();
+    private List<MovieItem> mGridData;
 
 
-    public GridViewAdapter(Context mContext, int layoutResourceId, ArrayList<MovieItem> mGridData) {
+    public GridViewAdapter(Context mContext, int layoutResourceId, List<MovieItem> mGridData) {
         super(mContext, layoutResourceId, mGridData);
         this.layoutResourceId = layoutResourceId;
         this.mContext = mContext;
         this.mGridData = mGridData;
     }
 
-    public ArrayList<MovieItem> getGidData()
-    {
+    public List<MovieItem> getGidData() {
         return this.mGridData;
     }
 
-    /**
-     * Updates grid data and refresh grid items.
-     * @param mGridData
-     */
-    public void setGridData(ArrayList<MovieItem> mGridData) {
+    public void setGridData(List<MovieItem> mGridData) {
         this.mGridData = mGridData;
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, final ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull final ViewGroup parent) {
         ViewHolder holder;
 
         if (convertView == null) {
@@ -65,7 +64,7 @@ public class GridViewAdapter extends ArrayAdapter<MovieItem> {
 
         MovieItem item = mGridData.get(position);
         holder.titleTextView.setText(item.getOriginalTitle());
-        String picasoUrl = NetworkUtils.getPicasoCompletePath(item.getPosterPath());
+        String picasoUrl = PicasoUtil.getPicasoCompletePath(item.getPosterPath());
         Picasso.with(mContext).load(picasoUrl).into(holder.imageView);
         //Keeping it outside of if else as, ui will be re-cycled in that case position will be wrong
         holder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +94,7 @@ public class GridViewAdapter extends ArrayAdapter<MovieItem> {
         return position;
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         TextView titleTextView;
         ImageView imageView;
     }

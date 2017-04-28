@@ -1,21 +1,74 @@
 package com.android.divgarg.blockbustermovies.models;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 
 /**
  * Created by divgarg on 4/15/17.
  */
 
-public class MovieItem implements Serializable{
+public class MovieItem implements Parcelable {
+    @SerializedName("id")
     private Integer movieId;
+    @SerializedName("release_date")
     private String releaseDate;
+    @SerializedName("poster_path")
     private String posterPath;
+    @SerializedName("adult")
     private Boolean isAdult;
+    @SerializedName("overview")
     private String overview;
-    private Integer[] genre_ids;
+    @SerializedName("original_title")
     private String originalTitle;
-    private String title;
+    @SerializedName("vote_average")
     private Double voteAvg;
+
+    public MovieItem() {
+
+    }
+
+
+    public MovieItem(Parcel in) {
+        movieId = in.readInt();
+        releaseDate = in.readString();
+        posterPath = in.readString();
+        overview = in.readString();
+        originalTitle = in.readString();
+        voteAvg = in.readDouble();
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(movieId);
+        dest.writeString(releaseDate);
+        dest.writeString(posterPath);
+        dest.writeString(overview);
+        dest.writeString(originalTitle);
+        dest.writeDouble(voteAvg);
+
+    }
+
+    public static final Creator<MovieItem> CREATOR = new Creator<MovieItem>() {
+        @Override
+        public MovieItem createFromParcel(Parcel in) {
+            return new MovieItem(in);
+        }
+
+        @Override
+        public MovieItem[] newArray(int size) {
+            return new MovieItem[size];
+        }
+    };
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     public Integer getMovieId() {
         return movieId;
@@ -57,28 +110,12 @@ public class MovieItem implements Serializable{
         this.overview = overview;
     }
 
-    public Integer[] getGenre_ids() {
-        return genre_ids;
-    }
-
-    public void setGenre_ids(Integer[] genre_ids) {
-        this.genre_ids = genre_ids;
-    }
-
     public String getOriginalTitle() {
         return originalTitle;
     }
 
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public Double getVoteAvg() {
@@ -88,4 +125,5 @@ public class MovieItem implements Serializable{
     public void setVoteAvg(Double voteAvg) {
         this.voteAvg = voteAvg;
     }
+
 }

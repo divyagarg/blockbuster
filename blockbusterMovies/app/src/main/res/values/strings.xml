@@ -10,4 +10,6 @@
     <string name="generic_error">Some error occurred. Please try after some time.</string>
     <string name="release_date">Release Date</string>
     <string name="settings">Preferences</string>
+    <string name="poster_description">Poster Description</string>
+    <string name="star_rating">star rating</string>
 </resources>
