@@ -28,6 +28,8 @@ import com.android.divgarg.blockbustermovies.utils.UserPreferenceUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,10 +38,12 @@ public class MovieGridActivity extends AppCompatActivity {
 
     private static final String TAG = MovieGridActivity.class.getSimpleName();
 
-
-    private GridView mGridView;
-    private ProgressBar mProgressBar;
-
+    @BindView(R.id.grid_view)
+    GridView mGridView;
+    @BindView(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private GridViewAdapter mGridAdapter;
     private List<MovieItem> mGridData;
 
@@ -57,18 +61,15 @@ public class MovieGridActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_grid_layout);
+        ButterKnife.bind(this);
 
         if(null != savedInstanceState && savedInstanceState.get(sortOrderKey) != null)
         {
             mMovieSortOrder = savedInstanceState.get(sortOrderKey).toString();
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-
-        mGridView = (GridView) findViewById(R.id.grid_view);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mGridView.setOnScrollListener(new MovieScrollListener());
 
@@ -191,7 +192,7 @@ public class MovieGridActivity extends AppCompatActivity {
         outState.putString(sortOrderKey, mMovieSortOrder);
         super.onSaveInstanceState(outState);
     }
-    
+
     public void loadData() {
 
         if(mGridAdapter != null)

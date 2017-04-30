@@ -19,6 +19,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * Created by divgarg on 4/15/17.
@@ -54,9 +57,7 @@ public class GridViewAdapter extends ArrayAdapter<MovieItem> {
         if (convertView == null) {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             convertView = inflater.inflate(layoutResourceId, parent, false);
-            holder = new ViewHolder();
-            holder.titleTextView = (TextView) convertView.findViewById(R.id.grid_item_title);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -65,7 +66,12 @@ public class GridViewAdapter extends ArrayAdapter<MovieItem> {
         MovieItem item = mGridData.get(position);
         holder.titleTextView.setText(item.getOriginalTitle());
         String picasoUrl = PicasoUtil.getPicasoCompletePath(item.getPosterPath());
-        Picasso.with(mContext).load(picasoUrl).into(holder.imageView);
+        Picasso
+                .with(mContext)
+                .load(picasoUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(holder.imageView);
         //Keeping it outside of if else as, ui will be re-cycled in that case position will be wrong
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +100,13 @@ public class GridViewAdapter extends ArrayAdapter<MovieItem> {
         return position;
     }
 
-    private static class ViewHolder {
-        TextView titleTextView;
-        ImageView imageView;
+    static class ViewHolder {
+        @BindView(R.id.grid_item_title) TextView titleTextView;
+        @BindView(R.id.grid_item_image) ImageView imageView;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
 }
