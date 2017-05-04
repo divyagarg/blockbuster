@@ -64,7 +64,6 @@ public class GridViewAdapter extends ArrayAdapter<MovieItem> {
         }
 
         MovieItem item = mGridData.get(position);
-        holder.titleTextView.setText(item.getOriginalTitle());
         String picasoUrl = PicasoUtil.getPicasoCompletePath(item.getPosterPath());
         Picasso
                 .with(mContext)
@@ -101,7 +100,6 @@ public class GridViewAdapter extends ArrayAdapter<MovieItem> {
     }
 
     static class ViewHolder {
-        @BindView(R.id.grid_item_title) TextView titleTextView;
         @BindView(R.id.grid_item_image) ImageView imageView;
 
         public ViewHolder(View view) {

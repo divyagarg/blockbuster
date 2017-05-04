@@ -22,6 +22,6 @@ public class UserPreferenceUtils {
     public void saveSortOrder(Context context, String sortOrder) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPrefs.edit().putString(MOVIE_SORT_ORDER, sortOrder);
-        sharedPrefs.edit().commit();
+        sharedPrefs.edit().apply();
     }
 }

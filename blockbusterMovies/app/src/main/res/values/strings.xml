@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Blockbuster Movies</string>
+    <string name="movie_detail_title">MovieDetail</string>
     <string name="popularity_pref_val">popular</string>
     <string name="top_rated_pref_val">top_rated</string>
     <string name="pref_movie_sort_summary">Sort movies</string>

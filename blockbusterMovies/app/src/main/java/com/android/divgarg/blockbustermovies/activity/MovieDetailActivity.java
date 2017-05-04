@@ -45,6 +45,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
         {
+            getSupportActionBar().setTitle(getString(R.string.movie_detail_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setIcon(R.mipmap.ic_launcher);
