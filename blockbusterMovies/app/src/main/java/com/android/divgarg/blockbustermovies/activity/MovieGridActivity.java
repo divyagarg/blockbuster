@@ -70,6 +70,7 @@ public class MovieGridActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        //getSupportActionBar().setElevation(0f);
 
         mGridView.setOnScrollListener(new MovieScrollListener());
 
@@ -138,7 +139,8 @@ public class MovieGridActivity extends AppCompatActivity {
 
     }
 
-    private void showNoInternetMessage() {
+    private void showNoInternetMessage()
+    {
         RelativeLayout mNoNetworkLayout = (RelativeLayout) findViewById(R.id.no_internet_layout);
         ImageView mRefreshBtn = (ImageView) findViewById(R.id.refresh_btn);
 

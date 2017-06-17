@@ -11,7 +11,7 @@
         android:layout_width="@dimen/movie_poster_dim_width"
         android:layout_height="@dimen/movie_poster_dim_height"
         android:contentDescription="@string/poster_description"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         tools:src="@drawable/placeholder" />
 
 </LinearLayout>

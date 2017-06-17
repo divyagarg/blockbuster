@@ -12,8 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.MovieGridActivity"
-            android:launchMode="singleTop">
+        <activity
+            android:name=".activity.MovieGridActivity"
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTop"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

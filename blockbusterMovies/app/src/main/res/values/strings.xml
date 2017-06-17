@@ -13,4 +13,6 @@
     <string name="settings">Preferences</string>
     <string name="poster_description">Poster Description</string>
     <string name="star_rating">star rating</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">User Reviews</string>
 </resources>

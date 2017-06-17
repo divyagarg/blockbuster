@@ -6,7 +6,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_info">
 
         <include
             android:id="@+id/toolbar"
@@ -69,6 +70,7 @@
             tools:text="A man with low IQ has accomplished great things in his life and been present during significant historic events -in each case, far exceeding what anyone imagined he could do." />
 
         <RelativeLayout
+            android:id="@+id/poster_release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/movie_synopsis"
@@ -116,6 +118,58 @@
 
         </RelativeLayout>
 
+        <View
+            android:id="@+id/divider1"
+            android:layout_below="@id/poster_release_date"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/trailers_header"
+            android:layout_below="@id/divider1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/trailers"
+            android:layout_margin="5dp"
+            android:padding="10dp"
+            android:textStyle="normal|bold"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailers_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/trailers_header"
+            android:scrollbars="vertical"
+            android:padding="10dp"
+            android:layout_margin="5dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/user_reviews_header"
+            android:layout_below="@id/trailers_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reviews"
+            android:layout_margin="5dp"
+            android:padding="10dp"
+            android:textStyle="normal|bold"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reviews_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_reviews_header"
+            android:scrollbars="vertical"
+            android:padding="10dp"
+            android:layout_margin="5dp">
+
+        </android.support.v7.widget.RecyclerView>
 
     </RelativeLayout>
+
 </ScrollView>
