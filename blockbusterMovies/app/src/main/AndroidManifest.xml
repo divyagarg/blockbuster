@@ -28,6 +28,10 @@
             android:parentActivityName=".activity.MovieGridActivity">
         </activity>
 
+        <provider
+            android:name="com.android.divgarg.blockbustermovies.data.MovieContentProvider"
+            android:authorities="com.android.divgarg.blockbustermovies"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -22,7 +22,13 @@
     <dimen name="poster_margin_left">20dp</dimen>
     <dimen name="movie_release_date_padding_right">20dp</dimen>
     <dimen name="movie_release_date_text_size">16sp</dimen>
+    <dimen name="fav_button_margin_right">20dp</dimen>
+    <dimen name="fav_button_margin_top">37dp</dimen>
 
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_margin">5dp</dimen>
+    <dimen name="trailer_padding">10dp</dimen>
+    <dimen name="trailer_header_textSize">18sp</dimen>
 
     <!--Grid View Item Dimensions-->
     <dimen name="movie_poster_dim_height">220dp</dimen>

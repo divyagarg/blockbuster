@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.android.divgarg.blockbustermovies.models.MenuItemTypes;
+
 /**
  * Created by divgarg on 4/22/17.
  */
@@ -11,17 +13,17 @@ import android.preference.PreferenceManager;
 public class UserPreferenceUtils {
 
     private final String MOVIE_SORT_ORDER = "prefMovieFilter";
-    private final String DEFAULT_MOVIE_SORT_ORDER = "popular";
+    private final int DEFAULT_MOVIE_SORT_ORDER = 1;
 
-    public String getUserPref(Context context) {
+    public int getUserPref(Context context) {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPrefs.getString(MOVIE_SORT_ORDER, DEFAULT_MOVIE_SORT_ORDER);
+        return sharedPrefs.getInt(MOVIE_SORT_ORDER, DEFAULT_MOVIE_SORT_ORDER);
     }
 
-    public void saveSortOrder(Context context, String sortOrder) {
+    public void saveSortOrder(Context context, MenuItemTypes sortOrder) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPrefs.edit().putString(MOVIE_SORT_ORDER, sortOrder);
+        sharedPrefs.edit().putInt(MOVIE_SORT_ORDER, sortOrder.getMenuType());
         sharedPrefs.edit().apply();
     }
 }

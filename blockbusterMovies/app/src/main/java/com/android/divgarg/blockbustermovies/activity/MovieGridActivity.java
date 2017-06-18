@@ -16,13 +16,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.android.divgarg.blockbustermovies.BuildConfig;
 import com.android.divgarg.blockbustermovies.R;
 import com.android.divgarg.blockbustermovies.adapter.GridViewAdapter;
+import com.android.divgarg.blockbustermovies.models.MenuItemTypes;
 import com.android.divgarg.blockbustermovies.models.MovieItem;
 import com.android.divgarg.blockbustermovies.models.MovieResponse;
-import com.android.divgarg.blockbustermovies.rest.ApiClient;
-import com.android.divgarg.blockbustermovies.rest.ApiInterface;
+import com.android.divgarg.blockbustermovies.utils.DataCallback;
+import com.android.divgarg.blockbustermovies.utils.DataService;
 import com.android.divgarg.blockbustermovies.utils.UserPreferenceUtils;
 
 import java.util.ArrayList;
@@ -30,9 +30,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MovieGridActivity extends AppCompatActivity {
 
@@ -44,18 +41,19 @@ public class MovieGridActivity extends AppCompatActivity {
     ProgressBar mProgressBar;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     private GridViewAdapter mGridAdapter;
     private List<MovieItem> mGridData;
 
-    private String mMovieSortOrder;
+    private MenuItemTypes mMovieSortOrder = MenuItemTypes.POPULAR;
     private int mCurrentPage = 1;
     private int mMaxNumPages = 1;
     private boolean mLastPage = false;
     private int mPrevTotal = 0;
-    private String sortOrderKey= "movie_sort_order";
+    private String sortOrderKey = "movie_sort_order";
+    private Menu menu;
     private UserPreferenceUtils prefUtil = new UserPreferenceUtils();
 
-    Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,84 +61,65 @@ public class MovieGridActivity extends AppCompatActivity {
         setContentView(R.layout.movie_grid_layout);
         ButterKnife.bind(this);
 
-        if(null != savedInstanceState && savedInstanceState.get(sortOrderKey) != null)
-        {
-            mMovieSortOrder = savedInstanceState.get(sortOrderKey).toString();
+        if (null != savedInstanceState && savedInstanceState.get(sortOrderKey) != null) {
+            int lastSortOrder = savedInstanceState.getInt(sortOrderKey);
+            mMovieSortOrder = MenuItemTypes.getType(lastSortOrder);
         }
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-        //getSupportActionBar().setElevation(0f);
 
         mGridView.setOnScrollListener(new MovieScrollListener());
 
         if (!isNetworkAvailable()) {
             showNoInternetMessage();
         } else {
-            if( null == mMovieSortOrder)
-            {
-                mMovieSortOrder = prefUtil.getUserPref(this);
-            }
             mProgressBar.setVisibility(View.VISIBLE);
             mGridData = new ArrayList<>();
             mGridAdapter = new GridViewAdapter(MovieGridActivity.this, R.layout.grid_item_layout, mGridData);
             mGridView.setAdapter(mGridAdapter);
-            makeAPICall(mCurrentPage);
+            getDataForCurrentPage(mCurrentPage);
         }
     }
 
-    private void makeAPICall(int page)
-    {
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<MovieResponse> call = null;
-        switch (mMovieSortOrder)
-        {
-            case "popular":
-            {
-                call = apiService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN, page);
-                break;
-            }
-            case "top_rated":
-            {
-                call = apiService.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN, page);
-                break;
-            }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mMovieSortOrder == MenuItemTypes.FAVOURITE) {
+            loadData();
         }
-        call.enqueue(new Callback<MovieResponse>() {
+    }
+
+    private void getDataForCurrentPage(int page) {
+        DataService.getInstance().getDataOfType(getApplicationContext(), mMovieSortOrder, new DataCallback() {
 
             @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                MovieResponse movieResponse= response.body();
-                if(mCurrentPage == 1)
-                {
+            public void onSuccess(MovieResponse movieResponse) {
+                if (mCurrentPage == 1) {
                     mMaxNumPages = movieResponse.getTotalPages();
                 }
-                List<MovieItem> movies= movieResponse.getResults();
-                if(movies != null)
-                {
+                List<MovieItem> movies = movieResponse.getResults();
+                if (movies != null) {
                     mGridData = mGridAdapter.getGidData();
                     if (mGridData == null) {
                         mGridData = new ArrayList<>();
                     }
                     mGridData.addAll(movies);
                 }
-
                 mGridAdapter.setGridData(mGridData);
                 mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
+            public void onFailure(Throwable t) {
                 mProgressBar.setVisibility(View.GONE);
                 Log.e(TAG, t.toString());
             }
-        });
-
+        }, page);
     }
 
-    private void showNoInternetMessage()
-    {
+
+    private void showNoInternetMessage() {
         RelativeLayout mNoNetworkLayout = (RelativeLayout) findViewById(R.id.no_internet_layout);
         ImageView mRefreshBtn = (ImageView) findViewById(R.id.refresh_btn);
 
@@ -158,7 +137,9 @@ public class MovieGridActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem menuItem;
         getMenuInflater().inflate(R.menu.settings, menu);
-        if(mMovieSortOrder != null && mMovieSortOrder.equals("top_rated"))
+        if ( mMovieSortOrder == MenuItemTypes.FAVOURITE)
+            menuItem = menu.getItem(2);
+        else if (mMovieSortOrder == MenuItemTypes.TOP_RATED)
             menuItem = menu.getItem(1);
         else
             menuItem = menu.getItem(0);
@@ -170,20 +151,29 @@ public class MovieGridActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int selectedSettingId = item.getItemId();
+
+        int size = menu.size();
+        for (int i = 0; i < size; i++) {
+            menu.getItem(i).setChecked(false);
+        }
         switch (selectedSettingId) {
             case R.id.popularity:
-                mMovieSortOrder = getResources().getString(R.string.popularity_pref_val);
+
+                mMovieSortOrder = MenuItemTypes.POPULAR;
                 prefUtil.saveSortOrder(this, mMovieSortOrder);
                 item.setChecked(true);
-                MenuItem menuItem = menu.getItem(1);
-                menuItem.setChecked(false);
+
                 break;
             case R.id.top_rating:
-                mMovieSortOrder = getResources().getString(R.string.top_rated_pref_val);
+                mMovieSortOrder = MenuItemTypes.TOP_RATED;
                 prefUtil.saveSortOrder(this, mMovieSortOrder);
                 item.setChecked(true);
-                menuItem = menu.getItem(0);
-                menuItem.setChecked(false);
+                break;
+            case R.id.favourite:
+                mMovieSortOrder = MenuItemTypes.FAVOURITE;
+                prefUtil.saveSortOrder(this, mMovieSortOrder);
+                item.setChecked(true);
+
         }
         loadData();
         return true;
@@ -191,24 +181,22 @@ public class MovieGridActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(sortOrderKey, mMovieSortOrder);
+        outState.putInt(sortOrderKey, mMovieSortOrder.getMenuType());
         super.onSaveInstanceState(outState);
     }
 
     public void loadData() {
 
-        if(mGridAdapter != null)
-        {
+        if (mGridAdapter != null) {
             mGridAdapter.clear();
         }
         mPrevTotal = 0;
         mCurrentPage = 1;
         if (isNetworkAvailable()) {
-            makeAPICall(mCurrentPage);
+            getDataForCurrentPage(mCurrentPage);
         } else {
             showNoInternetMessage();
         }
-
     }
 
 
@@ -226,7 +214,6 @@ public class MovieGridActivity extends AppCompatActivity {
 
         MovieScrollListener() {
         }
-
 
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -248,7 +235,7 @@ public class MovieGridActivity extends AppCompatActivity {
                 }
             }
             if (!loading && (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) && !mLastPage) {
-                makeAPICall( mCurrentPage + 1);
+                getDataForCurrentPage(mCurrentPage + 1);
                 loading = true;
             }
         }

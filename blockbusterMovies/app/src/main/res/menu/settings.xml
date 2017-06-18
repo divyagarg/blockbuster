@@ -19,6 +19,14 @@
         tools:ignore="AppCompatResource"
         android:checkable="true"/>
 
-</group>
+        <item
+            android:id="@+id/favourite"
+            android:orderInCategory="100"
+            android:showAsAction="ifRoom"
+            android:title="@string/sort_by_favourites"
+            tools:ignore="AppCompatResource"
+            android:checkable="true"/>
+
+    </group>
 
 </menu>
