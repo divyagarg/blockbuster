@@ -8,10 +8,13 @@ import com.android.divgarg.blockbustermovies.data.MovieContract;
 import com.android.divgarg.blockbustermovies.models.MenuItemTypes;
 import com.android.divgarg.blockbustermovies.models.MovieItem;
 import com.android.divgarg.blockbustermovies.models.MovieResponse;
+import com.android.divgarg.blockbustermovies.models.MovieReview;
+import com.android.divgarg.blockbustermovies.models.MovieTrailer;
 import com.android.divgarg.blockbustermovies.rest.ApiClient;
 import com.android.divgarg.blockbustermovies.rest.ApiInterface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,6 +31,9 @@ public class DataService {
     private static final DataService dataService = new DataService();
 
     private List<MovieItem> movies = new ArrayList<>();
+
+    private HashMap<Integer, List<MovieTrailer>> trailerHashMap = new HashMap<>();
+    private HashMap<Integer, List<MovieReview>> moviewReviewHashMap = new HashMap<>();
 
     private DataService() {
 
@@ -128,5 +134,21 @@ public class DataService {
 
     public List<MovieItem> getMovies() {
         return movies;
+    }
+
+    public void setTrailers(int movieId, List<MovieTrailer> trailers) {
+        trailerHashMap.put(movieId, trailers);
+    }
+
+    public void setMoviewReviews(int movieId, List<MovieReview> moviewReviews) {
+        moviewReviewHashMap.put(movieId, moviewReviews);
+    }
+
+    public List<MovieTrailer> getTrailers(int movieId) {
+        return trailerHashMap.get(movieId);
+    }
+
+    public List<MovieReview> getReviews(int movieId) {
+        return moviewReviewHashMap.get(movieId);
     }
 }

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.android.divgarg.blockbustermovies.models.MovieTrailer;
 import com.android.divgarg.blockbustermovies.models.TrailerResponse;
 import com.android.divgarg.blockbustermovies.rest.ApiClient;
 import com.android.divgarg.blockbustermovies.rest.ApiInterface;
+import com.android.divgarg.blockbustermovies.utils.DataService;
 import com.android.divgarg.blockbustermovies.utils.PicasoUtil;
 import com.squareup.picasso.Picasso;
 
@@ -89,17 +91,19 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.favourite_btn)
     ImageButton mFavButton;
 
+    @BindView(R.id.detail_activity_scroll_view)
+    ScrollView mScrollView;
+
     private SQLiteDatabase mDB;
 
     private boolean isFavouriteMovie = false;
-
+    private static final String SCROLL_POSITION = "scroll_position";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_layout);
         ButterKnife.bind(this);
-
         MovieDBHelper dbHelper = new MovieDBHelper(getApplicationContext());
         mDB = dbHelper.getWritableDatabase();
 
@@ -155,8 +159,21 @@ public class MovieDetailActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.generic_error), Toast.LENGTH_SHORT).show();
             finish();
         }
+        int[] scrollPositions = {};
+        if (savedInstanceState != null) {
+            scrollPositions = savedInstanceState.getIntArray(SCROLL_POSITION);
+        }
 
+        final int[] finalScrollPositions = scrollPositions;
+        mScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (finalScrollPositions != null && finalScrollPositions.length >= 2) {
+                    mScrollView.scrollTo(finalScrollPositions[0], finalScrollPositions[1]);
+                }
 
+            }
+        });
     }
 
     private void changeFavStatus() {
@@ -197,51 +214,72 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void getUserReviewsInBackground(final int movieId) {
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<MovieReviewsResponse> call = apiService.fetchReviews(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN);
-        call.enqueue(new Callback<MovieReviewsResponse>() {
-            @Override
-            public void onResponse(Call<MovieReviewsResponse> call, Response<MovieReviewsResponse> response) {
-                MovieReviewsResponse reviewResponse = response.body();
-                if (reviewResponse != null && reviewResponse.getResults().size() > 0) {
-                    List<MovieReview> reviews = reviewResponse.getResults();
-                    mReviewAdapter = new MovieReviewAdapter(reviews);
-                    mReviewsRecyclerView.setAdapter(mReviewAdapter);
-                } else {
-                    mUserReviewsTxtView.setVisibility(View.GONE);
-                }
-            }
+        List<MovieReview> reviews = DataService.getInstance().getReviews(movieId);
+        if (reviews != null && reviews.size() > 0) {
+            setReviewsView(reviews);
+        } else {
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<MovieReviewsResponse> call = apiService.fetchReviews(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            call.enqueue(new Callback<MovieReviewsResponse>() {
+                @Override
+                public void onResponse(Call<MovieReviewsResponse> call, Response<MovieReviewsResponse> response) {
+                    MovieReviewsResponse reviewResponse = response.body();
+                    if (reviewResponse != null && reviewResponse.getResults().size() > 0) {
 
-            @Override
-            public void onFailure(Call<MovieReviewsResponse> call, Throwable t) {
-                Log.e(TAG, t.toString());
-            }
-        });
+                        List<MovieReview> reviewsList = reviewResponse.getResults();
+                        DataService.getInstance().setMoviewReviews(movieId, reviewsList);
+                        setReviewsView(reviewsList);
+                    } else {
+                        mUserReviewsTxtView.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MovieReviewsResponse> call, Throwable t) {
+                    Log.e(TAG, t.toString());
+                }
+            });
+        }
+    }
+
+    private void setReviewsView(List<MovieReview> reviews) {
+        mReviewAdapter = new MovieReviewAdapter(reviews);
+        mReviewsRecyclerView.setAdapter(mReviewAdapter);
     }
 
     private void getMovieTrailersInBackground(final int movieId) {
+        List<MovieTrailer> trailers = DataService.getInstance().getTrailers(movieId);
+        if (trailers != null && trailers.size() > 0) {
+            setTrailerView(trailers);
+        } else {
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<TrailerResponse> call = apiService.fetchTrailersForMovie(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            call.enqueue(new Callback<TrailerResponse>() {
 
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<TrailerResponse> call = apiService.fetchTrailersForMovie(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN);
-        call.enqueue(new Callback<TrailerResponse>() {
-
-            @Override
-            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
-                TrailerResponse res = response.body();
-                if (res != null && res.getResults().size() > 0) {
-                    List<MovieTrailer> trailers = res.getResults();
-                    mTrailerAdapter = new MovieTrailerAdapter(trailers);
-                    mTrailerRecyclerView.setAdapter(mTrailerAdapter);
-                } else {
-                    mTrailerTxtView.setVisibility(View.GONE);
+                @Override
+                public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
+                    TrailerResponse res = response.body();
+                    if (res != null && res.getResults().size() > 0) {
+                        List<MovieTrailer> trailerList = res.getResults();
+                        DataService.getInstance().setTrailers(movieId, trailerList);
+                        setTrailerView(trailerList);
+                    } else {
+                        mTrailerTxtView.setVisibility(View.GONE);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<TrailerResponse> call, Throwable t) {
-                Log.e(TAG, t.toString());
-            }
-        });
+                @Override
+                public void onFailure(Call<TrailerResponse> call, Throwable t) {
+                    Log.e(TAG, t.toString());
+                }
+            });
+        }
+
+    }
+
+    private void setTrailerView(List<MovieTrailer> trailers) {
+        mTrailerAdapter = new MovieTrailerAdapter(trailers);
+        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
     }
 
     @Override
@@ -252,4 +290,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray(SCROLL_POSITION,
+                new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
+    }
+
 }
