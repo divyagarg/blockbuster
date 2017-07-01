@@ -51,6 +51,9 @@ public class MovieGridActivity extends AppCompatActivity {
     private boolean mLastPage = false;
     private int mPrevTotal = 0;
     private String sortOrderKey = "movie_sort_order";
+    private String gridViewIndex = "grid_view_index";
+    private String currentPage = "current_page";
+    private String maxPages = "max_pages";
     private Menu menu;
     private UserPreferenceUtils prefUtil = new UserPreferenceUtils();
 
@@ -61,11 +64,6 @@ public class MovieGridActivity extends AppCompatActivity {
         setContentView(R.layout.movie_grid_layout);
         ButterKnife.bind(this);
 
-        if (null != savedInstanceState && savedInstanceState.get(sortOrderKey) != null) {
-            int lastSortOrder = savedInstanceState.getInt(sortOrderKey);
-            mMovieSortOrder = MenuItemTypes.getType(lastSortOrder);
-        }
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
@@ -75,10 +73,30 @@ public class MovieGridActivity extends AppCompatActivity {
             showNoInternetMessage();
         } else {
             mProgressBar.setVisibility(View.VISIBLE);
-            mGridData = new ArrayList<>();
+            if (DataService.getInstance().getMovies() != null) {
+                mGridData = DataService.getInstance().getMovies();
+            } else {
+                mGridData = new ArrayList<>();
+            }
             mGridAdapter = new GridViewAdapter(MovieGridActivity.this, R.layout.grid_item_layout, mGridData);
             mGridView.setAdapter(mGridAdapter);
             getDataForCurrentPage(mCurrentPage);
+        }
+
+        if (null != savedInstanceState) {
+            if (savedInstanceState.get(sortOrderKey) != null) {
+                int lastSortOrder = savedInstanceState.getInt(sortOrderKey);
+                mMovieSortOrder = MenuItemTypes.getType(lastSortOrder);
+            }
+            if (savedInstanceState.getInt(gridViewIndex) > 0) {
+                mGridView.smoothScrollToPosition(savedInstanceState.getInt(gridViewIndex));
+            }
+            if (savedInstanceState.getInt(currentPage) != 0) {
+                mCurrentPage = savedInstanceState.getInt(currentPage);
+            }
+            if (savedInstanceState.getInt(maxPages) != 0) {
+                mMaxNumPages = savedInstanceState.getInt(maxPages);
+            }
         }
     }
 
@@ -182,6 +200,9 @@ public class MovieGridActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(sortOrderKey, mMovieSortOrder.getMenuType());
+        outState.putInt(gridViewIndex, mGridView.getFirstVisiblePosition());
+        outState.putInt(currentPage, mCurrentPage);
+        outState.putInt(maxPages, mMaxNumPages);
         super.onSaveInstanceState(outState);
     }
 

@@ -12,6 +12,7 @@ import com.android.divgarg.blockbustermovies.rest.ApiClient;
 import com.android.divgarg.blockbustermovies.rest.ApiInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,6 +26,8 @@ import retrofit2.Response;
 public class DataService {
 
     private static final DataService dataService = new DataService();
+
+    private List<MovieItem> movies = new ArrayList<>();
 
     private DataService() {
 
@@ -62,6 +65,7 @@ public class DataService {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 MovieResponse movieResponse = response.body();
+                movies.addAll(movieResponse.getResults());
                 callback.onSuccess(movieResponse);
             }
 
@@ -80,6 +84,7 @@ public class DataService {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 MovieResponse movieResponse = response.body();
+                movies.addAll(movieResponse.getResults());
                 callback.onSuccess(movieResponse);
             }
 
@@ -117,6 +122,11 @@ public class DataService {
         MovieResponse movieResponse = new MovieResponse();
         movieResponse.setResults(movieList);
         movieResponse.setTotalPages(1);
+        movies.addAll(movieList);
         callback.onSuccess(movieResponse);
+    }
+
+    public List<MovieItem> getMovies() {
+        return movies;
     }
 }
